@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: aerosense-backend-api
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - MONGODB_URI=mongodb://mongodb:27017/aerosense
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PREDICTION_SERVICE_URL=http://ai-service:8000
+    depends_on:
+      - mongodb
+      - redis
+      - ai-service
+    restart: unless-stopped
+
+  ai-service:
+    build: ./ml-service
+    container_name: aerosense-ai-ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: aerosense-mongodb-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: aerosense-redis-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  redis_data:

@@ -1,0 +1,643 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@600;700;800;900&display=swap');
+
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+:root {
+  --bg-page: #f0f4f8;
+  --bg-card: #ffffff;
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(2, 132, 199, 0.35);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-hover: 0 2px 4px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.1);
+  --accent-sky: #0284c7;
+  --accent-teal: #0d9488;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --aqi-good: #22c55e;
+  --aqi-satisfactory: #84cc16;
+  --aqi-moderate: #eab308;
+  --aqi-poor: #f97316;
+  --aqi-verypoor: #ef4444;
+  --aqi-severe: #dc2626;
+}
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Native smooth-scroll is disabled — Lenis handles smooth scrolling instead.
+     Keeping both active causes jitter. */
+  scroll-behavior: auto;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background: 
+    linear-gradient(180deg, rgba(240, 246, 252, 0.45) 0%, rgba(226, 235, 245, 0.65) 100%),
+    url('assets/weather_bg.jpg') no-repeat center top fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+  /* overflow-y must be auto/scroll for Lenis to intercept wheel events */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Outfit', sans-serif;
+}
+
+.font-mono, code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* =========================================================
+   TRANSPARENT GLASSY UTILITIES (Glassmorphism)
+   ========================================================= */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 10px 32px 0 rgba(15, 23, 42, 0.07), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 30px 0 rgba(15, 23, 42, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.glass-card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 12px 30px 0 rgba(31, 38, 135, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.glass-header {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* dropdown → white surface */
+.glass-dropdown {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* =========================================================
+   LEAFLET MAP — LIGHT THEME OVERRIDES
+   ========================================================= */
+.leaflet-container {
+  background: #e2e8f0 !important;
+  font-family: 'Inter', sans-serif !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-card) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.leaflet-control-zoom a {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-color: rgba(0, 0, 0, 0.07) !important;
+  transition: all 0.15s ease !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 16px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f8fafc !important;
+  color: var(--accent-sky) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16) !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+.leaflet-tooltip {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+  font-size: 11px !important;
+}
+
+/* =========================================================
+   RANGE SLIDER (aqi.in light style)
+   ========================================================= */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: transparent;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: var(--accent-sky);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2), 0 2px 6px rgba(2, 132, 199, 0.4);
+  border: 2px solid #ffffff;
+  margin-top: -6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.15), 0 3px 10px rgba(2, 132, 199, 0.5);
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: #e2e8f0;
+  border-radius: 3px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+/* =========================================================
+   CUSTOM SCROLLBAR — LIGHT
+   ========================================================= */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(2, 132, 199, 0.35);
+}
+
+/* =========================================================
+   STATION BADGES ON MAP (light bg)
+   ========================================================= */
+.station-pin-container {
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.station-pin-container:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 1000 !important;
+}
+
+.station-badge-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1.5px solid rgba(0, 0, 0, 0.14);
+  border-radius: 20px;
+  padding: 2px 6px 2px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), 0 0 0 0.5px rgba(0,0,0,0.04);
+  white-space: nowrap;
+}
+
+.station-badge-code {
+  color: #475569;
+  margin-right: 5px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.station-badge-val {
+  padding: 1px 6px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 11px;
+  color: #030712;
+}
+
+/* =========================================================
+   TELECOM TOWER ICON
+   ========================================================= */
+.telecom-tower-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(2, 132, 199, 0.12);
+  border: 1.5px solid var(--accent-sky);
+  color: var(--accent-sky);
+  font-size: 9px;
+  box-shadow: 0 0 6px rgba(2, 132, 199, 0.28);
+}
+
+/* =========================================================
+   LAYOUT TRANSITION
+   ========================================================= */
+.deck-transition {
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================================
+   CML BEAM PULSING
+   ========================================================= */
+@keyframes microwavePulse {
+  0%   { opacity: 0.45; }
+  50%  { opacity: 1.0; }
+  100% { opacity: 0.45; }
+}
+
+.cml-beam-pulsing {
+  animation: microwavePulse 2s infinite ease-in-out;
+}
+
+/* =========================================================
+   PULSE RING (fire hotspots)
+   ========================================================= */
+@keyframes subtlePulse {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  50%  { transform: scale(1.5); opacity: 0.12; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.subtle-pulse-ring {
+  animation: subtlePulse 2.4s infinite ease-in-out;
+}
+
+/* =========================================================
+   STICKY HEADER SHADOW
+   ========================================================= */
+header.sticky {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+}
+
+/* =========================================================
+   HOURLY FORECAST SCROLL
+   ========================================================= */
+.forecast-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+/* =========================================================
+   AQI DONUT CIRCLE ANIMATION
+   ========================================================= */
+circle {
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+
+/* =========================================================
+   CHECKBOX STYLING
+   ========================================================= */
+input[type="checkbox"] {
+  accent-color: var(--accent-sky);
+}
+
+/* =========================================================
+   AQI.IN SPECIFIC VISUAL TOKENS & COMPONENTS
+   ========================================================= */
+.aqi-scale-strip {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(to right,
+    #10b981 0%,   #10b981 16.6%,
+    #84cc16 16.6%, #84cc16 33.3%,
+    #f59e0b 33.3%, #f59e0b 50%,
+    #f97316 50%,   #f97316 66.6%,
+    #ef4444 66.6%, #ef4444 83.3%,
+    #7f1d1d 83.3%, #7f1d1d 100%
+  );
+}
+
+.temp-range-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #38bdf8, #fbbf24, #f87171);
+}
+
+.aqi-badge-pulse {
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+  animation: aqiPulse 2s infinite;
+}
+
+@keyframes aqiPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.weather-param-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.weather-param-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
+}
+
+.forecast-hour-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.forecast-hour-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================================
+   API CONNECTION PANEL
+   ========================================================= */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#api-panel {
+  animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#api-panel-toggle {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#api-panel-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+/* Pulse ring on new API call */
+@keyframes apiBtnPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+  70%  { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* =========================================================
+   INTERACTIVE RADAR MAP HUD & SWEEP ANIMATION
+   ========================================================= */
+.radar-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.radar-overlay-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+}
+
+@keyframes radarSweepBeam {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-sweep-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  margin-top: -70%;
+  margin-left: -70%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(16, 185, 129, 0) 0deg,
+    rgba(16, 185, 129, 0) 300deg,
+    rgba(16, 185, 129, 0.08) 330deg,
+    rgba(16, 185, 129, 0.28) 360deg
+  );
+  animation: radarSweepBeam 5s linear infinite;
+  pointer-events: none;
+}
+
+.radar-sweep-beam.weather-radar-mode {
+  background: conic-gradient(
+    from 0deg,
+    rgba(14, 165, 233, 0) 0deg,
+    rgba(14, 165, 233, 0) 300deg,
+    rgba(14, 165, 233, 0.08) 330deg,
+    rgba(14, 165, 233, 0.30) 360deg
+  );
+}
+
+.radar-range-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(16, 185, 129, 0.35);
+  pointer-events: none;
+}
+
+.radar-range-ring.weather-ring {
+  border-color: rgba(14, 165, 233, 0.35);
+}
+
+.radar-hud-pill {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   AEROSENSE FUTURISTIC CINEMATIC THEME
+   CSS motion layers create a video-like atmospheric backdrop
+   without relying on an external video or changing app logic.
+   ========================================================= */
+:root {
+  --bg-page: #050b16;
+  --bg-card: rgba(9, 20, 38, 0.78);
+  --border-color: rgba(92, 190, 255, 0.16);
+  --border-hover: rgba(42, 211, 255, 0.48);
+  --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.28);
+  --shadow-hover: 0 18px 48px rgba(0, 0, 0, 0.42);
+  --accent-sky: #36c8ff;
+  --accent-teal: #2ce6d2;
+  --text-primary: #e7f4ff;
+  --text-secondary: #91a9c3;
+  --text-muted: #60758f;
+}
+
+html, body { background: #050b16 !important; color: #e7f4ff; }
+body {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 18% 8%, rgba(0, 130, 255, .18), transparent 38%),
+    radial-gradient(ellipse at 82% 22%, rgba(0, 226, 210, .10), transparent 34%),
+    linear-gradient(145deg, #050b16 0%, #071426 48%, #050b16 100%) !important;
+  background-attachment: fixed !important;
+  color: #e7f4ff !important;
+}
+body::before, body::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
+  z-index: -1;
+}
+body::before {
+  background:
+    radial-gradient(circle at 20% 35%, rgba(0, 174, 255, .16), transparent 18%),
+    radial-gradient(circle at 78% 55%, rgba(0, 245, 220, .10), transparent 20%),
+    radial-gradient(circle at 52% 85%, rgba(45, 91, 255, .12), transparent 22%);
+  filter: blur(34px);
+  animation: aero-drift 22s ease-in-out infinite alternate;
+}
+body::after {
+  inset: 0;
+  opacity: .16;
+  background-image: linear-gradient(rgba(85, 180, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(85, 180, 255, .08) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+@keyframes aero-drift {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+  50% { transform: translate3d(2%, 1.5%, 0) scale(1.08); }
+  100% { transform: translate3d(-1%, 2%, 0) scale(1.03); }
+}
+@keyframes aero-scan { from { transform: translateY(-110%); } to { transform: translateY(110vh); } }
+@keyframes aero-pulse { 0%,100% { opacity: .45; } 50% { opacity: .95; } }
+
+/* Dark glass surfaces */
+.glass-panel, .glass-card, .glass-subtle, .glass-header, .glass-dropdown,
+.glass-card-hover, .glass-card-hover:hover {
+  color: #e7f4ff !important;
+  background: rgba(8, 20, 38, .76) !important;
+  border: 1px solid rgba(104, 196, 255, .18) !important;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255,255,255,.035) !important;
+  backdrop-filter: blur(22px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
+}
+.glass-card, .glass-panel { border-radius: 18px; }
+.glass-card-hover:hover { transform: translateY(-3px); border-color: rgba(54, 200, 255, .42) !important; box-shadow: 0 18px 48px rgba(0, 0, 0, .38), 0 0 24px rgba(22, 178, 255, .08) !important; }
+header.sticky, .glass-header { background: rgba(4, 12, 25, .88) !important; border-bottom: 1px solid rgba(75, 190, 255, .2) !important; }
+header.sticky > div:last-child { background: rgba(7, 19, 35, .82) !important; border-color: rgba(90, 185, 255, .13) !important; }
+
+/* Tailwind light palette -> readable cool dark palette */
+.text-slate-900, .text-slate-800, .text-slate-700, .text-slate-600 { color: #dceeff !important; }
+.text-slate-500, .text-slate-400 { color: #8ca6c1 !important; }
+.text-slate-300 { color: #b4cbe0 !important; }
+.text-emerald-800, .text-emerald-700, .text-emerald-600 { color: #57ead6 !important; }
+.text-sky-900, .text-sky-800, .text-sky-700, .text-sky-600 { color: #67ceff !important; }
+.bg-white, .bg-white\/40, .bg-white\/50, .bg-white\/60, .bg-white\/70, .bg-white\/80, .bg-white\/90 { background-color: rgba(10, 25, 45, .82) !important; }
+.bg-slate-50, .bg-slate-100, .bg-slate-200 { background-color: rgba(22, 42, 65, .78) !important; }
+.border-white, .border-white\/60, .border-white\/80 { border-color: rgba(105, 190, 255, .18) !important; }
+.divide-slate-100 > :not([hidden]) ~ :not([hidden]), .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(105, 190, 255, .14) !important; }
+
+/* Cards, tables, controls */
+main { position: relative; z-index: 1; }
+main h1, main h2, main h3, main h4 { color: #e8f6ff !important; text-shadow: 0 0 22px rgba(47, 184, 255, .10); }
+main p, main label, main small { color: #91a9c3; }
+main .rounded-2xl, main .rounded-xl, main .rounded-3xl { border-color: rgba(95, 190, 255, .16); }
+input, select, textarea { color: #e7f4ff !important; background: rgba(5, 16, 31, .88) !important; border-color: rgba(91, 183, 255, .24) !important; }
+input::placeholder, textarea::placeholder { color: #6f88a3 !important; }
+button { transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+button:hover { border-color: rgba(56, 205, 255, .4); }
+button.bg-emerald-600, button.bg-emerald-700, .bg-emerald-600 { background: linear-gradient(135deg, #087e9f, #087d82) !important; color: #f2fdff !important; box-shadow: 0 5px 20px rgba(0, 195, 220, .18); }
+button.bg-slate-800, .bg-slate-800 { background: #18334e !important; color: #eaf7ff !important; }
+table { color: #dceeff; }
+thead, th { color: #8fc9e9 !important; background: rgba(10, 29, 49, .92) !important; }
+tbody tr { border-color: rgba(105, 190, 255, .12) !important; }
+tbody tr:hover { background: rgba(26, 130, 175, .10) !important; }
+
+/* Cinematic section accents */
+main > div:first-child { animation: aero-enter .8s ease both; }
+@keyframes aero-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+#root > div { min-height: 100vh; }
+#root > div::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  z-index: 80;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(49, 212, 255, .75), transparent);
+  box-shadow: 0 0 18px rgba(49, 212, 255, .65);
+  animation: aero-pulse 4s ease-in-out infinite;
+}
+
+/* Leaflet stays legible while matching the dark interface */
+.leaflet-container { background: #071526 !important; }
+.leaflet-control-zoom a { background: #0b2037 !important; color: #a9e5ff !important; border-color: rgba(96, 190, 255, .2) !important; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #0b1d32 !important; color: #e7f4ff !important; border-color: rgba(96, 190, 255, .2) !important; }
+.leaflet-tooltip { background: rgba(7, 24, 42, .96) !important; color: #dff4ff !important; border-color: rgba(96, 190, 255, .24) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}

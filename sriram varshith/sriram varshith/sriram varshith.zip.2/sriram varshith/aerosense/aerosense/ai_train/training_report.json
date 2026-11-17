@@ -1,0 +1,116 @@
+{
+  "pm25": {
+    "1h": {
+      "mae": 13.07,
+      "rmse": 16.38,
+      "r2": 0.148,
+      "picp_percent": 91.1,
+      "mpiw": 38.39
+    },
+    "3h": {
+      "mae": 14.19,
+      "rmse": 17.68,
+      "r2": 0.007,
+      "picp_percent": 68.4,
+      "mpiw": 35.92
+    },
+    "6h": {
+      "mae": 13.74,
+      "rmse": 17.33,
+      "r2": 0.045,
+      "picp_percent": 72.2,
+      "mpiw": 37.77
+    },
+    "12h": {
+      "mae": 13.18,
+      "rmse": 16.96,
+      "r2": 0.084,
+      "picp_percent": 91.3,
+      "mpiw": 41.42
+    },
+    "24h": {
+      "mae": 19.4,
+      "rmse": 23.69,
+      "r2": -0.771,
+      "picp_percent": 92.0,
+      "mpiw": 42.79
+    },
+    "72h": {
+      "mae": 22.68,
+      "rmse": 26.88,
+      "r2": -1.276,
+      "picp_percent": 93.5,
+      "mpiw": 47.18
+    }
+  },
+  "aqi": {
+    "1h": {
+      "mae": 14.5,
+      "rmse": 23.42,
+      "r2": 0.456,
+      "picp_percent": 76.1,
+      "mpiw": 45.72
+    },
+    "3h": {
+      "mae": 15.9,
+      "rmse": 24.95,
+      "r2": 0.383,
+      "picp_percent": 74.6,
+      "mpiw": 47.55
+    },
+    "6h": {
+      "mae": 16.58,
+      "rmse": 25.72,
+      "r2": 0.344,
+      "picp_percent": 73.1,
+      "mpiw": 48.05
+    },
+    "12h": {
+      "mae": 16.4,
+      "rmse": 25.34,
+      "r2": 0.363,
+      "picp_percent": 73.9,
+      "mpiw": 49.71
+    },
+    "24h": {
+      "mae": 17.72,
+      "rmse": 26.55,
+      "r2": 0.302,
+      "picp_percent": 70.8,
+      "mpiw": 47.11
+    },
+    "72h": {
+      "mae": 32.97,
+      "rmse": 43.35,
+      "r2": -0.885,
+      "picp_percent": 71.1,
+      "mpiw": 62.26
+    }
+  },
+  "weather_feedback": {
+    "solar_attenuation_watts": {
+      "mae": 0.058,
+      "rmse": 0.115,
+      "r2": 0.999
+    },
+    "temp_depression_c": {
+      "mae": 0.001,
+      "rmse": 0.003,
+      "r2": 0.995
+    },
+    "pblh_suppression_m": {
+      "mae": 0.11,
+      "rmse": 0.401,
+      "r2": 0.999
+    },
+    "visibility_km": {
+      "mae": 0.171,
+      "rmse": 0.235,
+      "r2": 0.999
+    }
+  },
+  "pytorch_gru": {
+    "trajectory_mae": 13.33,
+    "overall_r2": -0.001
+  }
+}
